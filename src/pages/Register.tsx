@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Check } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -17,20 +18,30 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const {signup} = useAuth()
+
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate registration process
-    setTimeout(() => {
-      setIsLoading(false);
+    try{
+      await signup(name, password, name, '');
       toast({
         title: "Registration successful",
         description: "Welcome to VideoInsight!",
       });
-      navigate("/history");
-    }, 1500);
+      navigate("/login");
+    }catch(e){
+      toast({
+        title: "Error",
+        description: "We are unable to create your account. Please try again later.",
+        variant: "destructive",
+      });
+    }finally{
+      setIsLoading(false);
+    }
+    
+    
   };
   
   return (
@@ -49,7 +60,7 @@ const Register = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">Username</Label>
                   <Input
                     id="name"
                     type="text"

@@ -1,14 +1,18 @@
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Play, Search, History as HistoryIcon } from "lucide-react";
 import { isUserLoggedIn } from "@/utils/mockData";
+import useAuth from "@/hooks/useAuth";
+import { useMemo } from "react";
 
 export function Header() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  const userLoggedIn = isUserLoggedIn();
+  const {auth, logout} = useAuth();
+  const userLoggedIn = useMemo(()=>!!auth.id, [auth]);
+  const navigate = useNavigate();
   
   return (
     <header className="w-full py-4 px-6 flex items-center justify-between border-b backdrop-blur-sm bg-background/80 fixed top-0 z-50 transition-all duration-300">
@@ -25,9 +29,19 @@ export function Header() {
             <Link to="/search">
               <Button variant="ghost" size="sm">Try as Guest</Button>
             </Link>
+            {
+              userLoggedIn ? 
+              <Link to="/register">
+              <Button onClick={()=>{
+                logout();
+                navigate('/login')
+              }} variant="default" size="sm" className="animate-pulse-subtle">Logout</Button>
+            </Link>
+            :
             <Link to="/register">
               <Button variant="default" size="sm" className="animate-pulse-subtle">Sign Up</Button>
             </Link>
+            }
           </>
         ) : (
           <>

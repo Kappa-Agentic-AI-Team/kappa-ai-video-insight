@@ -3,6 +3,7 @@ export interface VideoSummaryData {
   id: string;
   title: string;
   summary: string;
+  formattedSummary?: string,
   keyPoints: string[];
   videoUrl: string;
   timestamp: number;

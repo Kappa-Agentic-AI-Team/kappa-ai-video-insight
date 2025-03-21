@@ -7,16 +7,20 @@ import { VideoSummaryData, getUserHistory } from "@/utils/mockData";
 import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Clock } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
+import { videoAPI } from "@/services/api";
 
 const History = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState<VideoSummaryData[]>([]);
   const { toast } = useToast();
+  const {auth} = useAuth();
+  const {fetchSearchHistory} = videoAPI;
   
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const userHistory = await getUserHistory();
+        const userHistory = await fetchSearchHistory(`${auth.id}`);
         setHistory(userHistory);
       } catch (error) {
         console.error("Error fetching history:", error);
@@ -29,8 +33,9 @@ const History = () => {
         setIsLoading(false);
       }
     };
-    
-    fetchHistory();
+    if(auth.id){
+      fetchHistory();
+    }
   }, [toast]);
   
   return (
@@ -68,10 +73,10 @@ const History = () => {
                   key={video.id}
                   title={video.title}
                   summary={video.summary}
-                  keyPoints={video.keyPoints}
+                  formattedSummary={video.formattedSummary}
                   videoUrl={video.videoUrl}
-                  isLoggedIn={true}
-                  isSaved={true}
+                  isLoggedIn={!!auth.id}
+                  isSaved={!!auth.id}
                 />
               ))
             ) : (

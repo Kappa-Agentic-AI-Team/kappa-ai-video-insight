@@ -42,7 +42,7 @@ export function Header() {
                 </Button>
               </Link>
             )}
-            <Link to="/register">
+            <Link to="/login">
               <Button onClick={()=>{
                 logout();
                 navigate('/login')

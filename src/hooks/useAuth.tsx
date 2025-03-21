@@ -41,13 +41,16 @@ export default function useAuth() {
     }, [auth]);
 
     const login = async (username: string, password: string) => {
-        const {response} = await api.login(username, password)
+        const { response } = await api.login(username, password)
         const newAuth: AuthState = {id: response.user_id, username, password, image: '' };
         setAuth(newAuth);
     };
 
-    const signup = async (username: string, password: string,name: string, image: string) => {
-        return api.register(username, password, name, image)
+    const signup = async (username: string, password: string, name: string, image: string) => {
+        const response = await api.register(username, password, name, image)
+        console.log(response)
+        const newAuth: AuthState = {id: response.user_id, username, password, image };
+        setAuth(newAuth);
     };
 
     const logout = () => {

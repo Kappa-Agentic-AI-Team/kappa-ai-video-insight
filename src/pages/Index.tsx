@@ -4,8 +4,13 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Cpu, Search, Clock, BookOpen, ArrowRight } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
+import { useMemo } from "react";
 
 const Index = () => {
+  const {auth, logout} = useAuth();
+  const userLoggedIn = useMemo(() => !!auth.id, [auth]);
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -32,17 +37,26 @@ const Index = () => {
               </p>
               
               <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                <Link to="/app">
+                {!userLoggedIn ? (
+                  <>
+                    <Link to="/app">
+                      <Button size="lg" className="rounded-full px-8">
+                        Try as Guest <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button variant="outline" size="lg" className="rounded-full px-8">
+                        Sign Up Free
+                      </Button>
+                    </Link>
+                  </>
+                ):(
+                <Link to="/search">
                   <Button size="lg" className="rounded-full px-8">
-                    Try Now <ArrowRight className="ml-2 h-4 w-4" />
+                    Get Started
                   </Button>
                 </Link>
-                
-                <Link to="/register">
-                  <Button variant="outline" size="lg" className="rounded-full px-8">
-                    Sign Up Free
-                  </Button>
-                </Link>
+                )}
               </div>
             </div>
           </div>

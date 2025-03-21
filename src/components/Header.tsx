@@ -24,26 +24,7 @@ export function Header() {
       </div>
       
       <div className="flex items-center gap-4">
-        {isHomePage ? (
-          <>
-            <Link to="/search">
-              <Button variant="ghost" size="sm">Try as Guest</Button>
-            </Link>
-            {
-              userLoggedIn ? 
-              <Link to="/register">
-              <Button onClick={()=>{
-                logout();
-                navigate('/login')
-              }} variant="default" size="sm" className="animate-pulse-subtle">Logout</Button>
-            </Link>
-            :
-            <Link to="/register">
-              <Button variant="default" size="sm" className="animate-pulse-subtle">Sign Up</Button>
-            </Link>
-            }
-          </>
-        ) : (
+        {userLoggedIn ? (
           <>
             {location.pathname !== "/search" && (
               <Link to="/search">
@@ -53,7 +34,7 @@ export function Header() {
                 </Button>
               </Link>
             )}
-            {userLoggedIn && location.pathname !== "/history" && (
+            {location.pathname !== "/history" && (
               <Link to="/history">
                 <Button variant="ghost" size="sm">
                   <HistoryIcon className="mr-2 h-4 w-4" />
@@ -61,14 +42,26 @@ export function Header() {
                 </Button>
               </Link>
             )}
-            {!userLoggedIn && location.pathname !== "/login" && location.pathname !== "/register" && (
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Login</Button>
+            <Link to="/register">
+              <Button onClick={()=>{
+                logout();
+                navigate('/login')
+              }} variant="default" size="sm" className="animate-pulse-subtle">Logout</Button>
+            </Link>
+          </> 
+         ): (
+          <>
+            {location.pathname !== "/search" && (
+              <Link to="/search">
+                <Button variant="ghost" size="sm">
+                  <Search className="mr-2 h-4 w-4" />
+                  Try as Guest
+                </Button>
               </Link>
             )}
-            {!userLoggedIn && location.pathname !== "/register" && location.pathname !== "/login" && (
+            {location.pathname !== "/login" && location.pathname !== "/register" && (
               <Link to="/register">
-                <Button variant="default" size="sm">Sign Up</Button>
+                <Button variant="default" size="sm" className="animate-pulse-subtle">Sign Up</Button>
               </Link>
             )}
           </>

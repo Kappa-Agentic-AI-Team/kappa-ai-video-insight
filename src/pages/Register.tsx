@@ -25,13 +25,14 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
     try{
-      await signup(name, password, name, '');
+      await signup(email, password, name, '');
       toast({
         title: "Registration successful",
         description: "Welcome to VideoInsight!",
       });
-      navigate("/login");
-    }catch(e){
+      setTimeout(()=>navigate("/search"), 1000)
+    } catch (e) {
+      console.error(e);
       toast({
         title: "Error",
         description: "We are unable to create your account. Please try again later.",
@@ -40,8 +41,6 @@ const Register = () => {
     }finally{
       setIsLoading(false);
     }
-    
-    
   };
   
   return (
@@ -60,7 +59,7 @@ const Register = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Username</Label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
                     type="text"
@@ -71,7 +70,7 @@ const Register = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email/Username</Label>
                   <Input
                     id="email"
                     type="email"
@@ -131,7 +130,7 @@ const Register = () => {
                   Sign in
                 </Link>
               </div>
-              <div className="relative">
+              {/* <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t"></div>
                 </div>
@@ -146,7 +145,7 @@ const Register = () => {
                 <Button variant="outline" className="w-full">
                   GitHub
                 </Button>
-              </div>
+              </div> */}
             </CardFooter>
           </Card>
         </div>

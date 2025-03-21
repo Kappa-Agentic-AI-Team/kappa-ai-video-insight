@@ -2,8 +2,6 @@
 import { toast } from "@/hooks/use-toast";
 import { VideoSummaryData } from "@/utils/mockData";
 
-// Base API URL - would be replaced with actual backend URL in production
-//const API_BASE_URL = 'http://127.0.0.1:8000';
 const API_BASE_URL = "https://kappa-ai-video-insight-be.onrender.com";
 
 // Helper for making authenticated requests
@@ -56,10 +54,10 @@ export const authApi = {
     });
   },
   
-  register: async (username: string, password: string, first_name: string, last_name: string, image:string="") => {
+  register: async (username: string, password: string, name, image: string = "") => {
     return fetchWithAuth('/register', {
       method: 'POST',
-      body: JSON.stringify({ username, name: username, password, first_name, last_name, image })
+      body: JSON.stringify({ username, name, password, image })
     });
   },
   

@@ -47,8 +47,7 @@ export default function useAuth() {
     };
 
     const signup = async (username: string, password: string, name: string, image: string) => {
-        const response = await api.register(username, password, name, image)
-        console.log(response)
+        const { response } = await api.register(username, password, name, image)
         const newAuth: AuthState = {id: response.user_id, username, password, image };
         setAuth(newAuth);
     };

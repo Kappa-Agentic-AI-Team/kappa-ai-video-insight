@@ -7,30 +7,28 @@ import { VideoSummary } from "@/components/VideoSummary";
 import { VideoSummaryData, searchVideo, saveVideoToHistory, isUserLoggedIn } from "@/utils/mockData";
 import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
+import { videoAPI } from "@/services/api";
+import useAuth from "@/hooks/useAuth";
 
 const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [videoData, setVideoData] = useState<VideoSummaryData | null>(null);
+  const [videoSummary, setVideoSummary] = useState<VideoSummaryData | null>(null);
   const { toast } = useToast();
-  const userLoggedIn = isUserLoggedIn();
+  const {auth} = useAuth();
+  const {searchSummarize, userSearchSummarize} = videoAPI;
   
   const handleSearch = async (query: string) => {
     setIsLoading(true);
     
     try {
-      const result = await searchVideo(query);
-      setVideoData(result);
-      
-      // Save to history only if user is logged in
-      if (userLoggedIn) {
-        await saveVideoToHistory(result.id);
-        toast({
-          title: "Search saved",
-          description: "This search has been added to your history",
-        });
+      let result;
+      if(auth.id){
+        result = await userSearchSummarize(auth.username, auth.password, query);
+      }else{
+        result = await searchSummarize(query)
       }
+      setVideoSummary(result);
     } catch (error) {
-      console.error("Error searching for video:", error);
       toast({
         title: "Error",
         description: "Failed to search for video. Please try again.",
@@ -51,7 +49,7 @@ const SearchPage = () => {
             <h1 className="text-3xl font-bold mb-2">Search YouTube Videos</h1>
             <p className="text-muted-foreground">
               Find and summarize any YouTube video with a simple search
-              {userLoggedIn && " - your searches will be saved to your history"}
+              {auth.id && " - your searches will be saved to your history"}
             </p>
           </div>
           
@@ -59,15 +57,15 @@ const SearchPage = () => {
             <VideoSearch onSearch={handleSearch} isLoading={isLoading} />
           </div>
           
-          {videoData ? (
+          {videoSummary ? (
             <div className="animate-fade-up">
               <VideoSummary
-                title={videoData.title}
-                summary={videoData.summary}
-                keyPoints={videoData.keyPoints}
-                videoUrl={videoData.videoUrl}
-                isLoggedIn={userLoggedIn}
-                isSaved={userLoggedIn}
+                title={videoSummary.title}
+                summary={videoSummary.summary}
+                formattedSummary={videoSummary.formattedSummary}
+                videoUrl={videoSummary.videoUrl}
+                isLoggedIn={!!auth.id}
+                isSaved={!!auth.id}
                 onSave={() => toast({ 
                   title: "Already saved", 
                   description: "This video is already in your history" 

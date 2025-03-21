@@ -9,27 +9,36 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const {login} = useAuth()
+
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
+    try{
+      await login(username, password);
       toast({
         title: "Login successful",
-        description: "Welcome back to VideoInsight!",
+        description: "Welcome to VideoInsight!",
       });
-      navigate("/history");
-    }, 1500);
+      setTimeout(()=>navigate("/search"), 1000)
+    }catch(e){
+      toast({
+        title: "Error",
+        description: "We are unable to login into your account. Please try again later.",
+        variant: "destructive",
+      });
+    }finally{
+      setIsLoading(false);
+    }
   };
   
   return (
@@ -48,22 +57,21 @@ const Login = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Username</Label>
                   <Input
                     id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                   />
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                    {/* <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                       Forgot password?
-                    </Link>
+                    </Link> */}
                   </div>
                   <Input
                     id="password"
@@ -93,7 +101,7 @@ const Login = () => {
                   Sign up
                 </Link>
               </div>
-              <div className="relative">
+              {/* <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t"></div>
                 </div>
@@ -108,7 +116,7 @@ const Login = () => {
                 <Button variant="outline" className="w-full">
                   GitHub
                 </Button>
-              </div>
+              </div> */}
             </CardFooter>
           </Card>
         </div>
